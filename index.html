@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ładne Glikemie</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #e3f2fd; }
+        .container { max-width: 800px; margin-top: 30px; }
+        table { background-color: white; }
+        .hidden { display: none; }
+        textarea { width: 100%; height: 200px; font-family: "Courier New", monospace; }
+        .footer { margin-top: 20px; font-size: 0.9em; text-align: center; color: gray; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 class="text-center text-primary">Ładne Glikemie</h2>
+
+    <!-- Formularz początkowy -->
+    <div id="setup-form">
+        <label for="startDate" class="form-label">Data początkowa:</label>
+        <input type="date" id="startDate" class="form-control">
+
+        <label for="days" class="form-label mt-2">Ile dni do przodu?</label>
+        <input type="number" id="days" class="form-control" min="1" value="7">
+
+        <button class="btn btn-primary mt-3 w-100" onclick="generateTable()">Generuj tabelkę</button>
+    </div>
+
+    <!-- Wygenerowana tabelka -->
+    <div id="table-container" class="hidden">
+        <table class="table table-bordered mt-4">
+            <thead class="table-primary">
+                <tr>
+                    <th>Data</th>
+                    <th>7:00</th>
+                    <th>12:00</th>
+                    <th>15:00</th>
+                    <th>19:00</th>
+                    <th>Leki</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
+
+        <button class="btn btn-success w-100 mt-2" onclick="generateText()">Generuj tekst</button>
+    </div>
+
+    <!-- Pole tekstowe z wynikami -->
+    <div id="output-container" class="hidden">
+        <h4 class="mt-4">Wygenerowany tekst:</h4>
+        <textarea id="output-text" readonly></textarea>
+        <button class="btn btn-secondary mt-2 w-100" onclick="copyToClipboard()">Kopiuj do schowka</button>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="footer">
+        <p>Nie przetwarzamy żadnych danych na serwerze. Wszystkie informacje pozostają w Twojej przeglądarce.</p>
+        <p>Strona stworzona przez Mikołaja z ChatGPT.</p>
+    </div>
+</div>
+
+<script>
+    function generateTable() {
+        let startDate = document.getElementById("startDate").value;
+        let days = parseInt(document.getElementById("days").value);
+        let tableBody = document.getElementById("table-body");
+
+        if (!startDate || days < 1) {
+            alert("Podaj poprawne dane!");
+            return;
+        }
+
+        tableBody.innerHTML = "";
+        let date = new Date(startDate);
+
+        for (let i = 0; i < days; i++) {
+            let row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${date.toISOString().split("T")[0]}</td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+                <td contenteditable="true"></td>
+            `;
+            tableBody.appendChild(row);
+            date.setDate(date.getDate() + 1);
+        }
+
+        document.getElementById("setup-form").classList.add("hidden");
+        document.getElementById("table-container").classList.remove("hidden");
+    }
+
+    function generateText() {
+        let rows = document.querySelectorAll("#table-body tr");
+        let text = "Data\t7:00\t12:00\t15:00\t19:00\tLeki\n";
+        text += "-----------------------------------------------------\n";
+
+        rows.forEach(row => {
+            let cols = row.querySelectorAll("td");
+            let line = Array.from(cols).map(col => col.innerText.trim()).join("\t");
+            text += line + "\n";
+        });
+
+        document.getElementById("output-text").value = text;
+        document.getElementById("output-container").classList.remove("hidden");
+    }
+
+    function copyToClipboard() {
+        let textArea = document.getElementById("output-text");
+        textArea.select();
+        document.execCommand("copy");
+        alert("Skopiowano do schowka!");
+    }
+</script>
+
+</body>
+</html>
