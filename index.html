@@ -21,6 +21,7 @@
 
     <!-- Formularz początkowy -->
     <div id="setup-form">
+        <p>Narzędzie służy do stworzenia raportu glikemii w formie tabelki tekstowej. Wprowadź niezbędne dane i postępuj zgodnie z instrukcjami.</p>
         <label for="startDate" class="form-label">Data początkowa:</label>
         <input type="date" id="startDate" class="form-control">
 
@@ -59,7 +60,7 @@
     <!-- Disclaimer -->
     <div class="footer">
         <p>Nie przetwarzamy żadnych danych na serwerze. Wszystkie informacje pozostają w Twojej przeglądarce.</p>
-        <p>Strona stworzona przez Mikołaja z ChatGPT.</p>
+        <p>Autor: Mikołaj Pipka. Do użytku wolnego.</p>
     </div>
 </div>
 
@@ -97,7 +98,7 @@
 
     function generateText() {
         let rows = document.querySelectorAll("#table-body tr");
-        let text = "Data\t7:00\t12:00\t15:00\t19:00\tLeki\n";
+        let text = "Data\t\t7:00\t12:00\t15:00\t19:00\tLeki\n";
         text += "-----------------------------------------------------\n";
 
         rows.forEach(row => {
@@ -105,7 +106,7 @@
             let line = Array.from(cols).map(col => col.innerText.trim()).join("\t");
             text += line + "\n";
         });
-
+        text += "-----------------------------------------------------\n";
         document.getElementById("output-text").value = text;
         document.getElementById("output-container").classList.remove("hidden");
     }
@@ -114,7 +115,7 @@
         let textArea = document.getElementById("output-text");
         textArea.select();
         document.execCommand("copy");
-        alert("Skopiowano do schowka!");
+        alert("Skopiowano do schowka! Wklej to teraz do AMMS, jako raport z badania.");
     }
 </script>
 
